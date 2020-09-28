@@ -7,13 +7,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -21,10 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     Spinner spnDeviceList;
-    Button btnConnectBT, btnOn, btnOff, btnHold;
+    Button btnConnectBT, btnForward, btnBackward, btnForwardLeft, btnForwardRight, btnBackwardLeft, btnBackwardRight;
+    ImageButton btn;
 
     private ConnectBT connectBT = null;
     private BluetoothAdapter bluetoothAdapter = null;
@@ -41,34 +41,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Init();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     void Init(){
+        InitView();
+        InitBluetooth();
+    }
+
+    void InitView(){
 
         spnDeviceList = findViewById(R.id.spnDeviceList);
         btnConnectBT = findViewById(R.id.btnConnectBT);
         btnConnectBT.setOnClickListener(this);
 
-        btnOn = findViewById(R.id.btnOn);
-        btnOff = findViewById(R.id.btnOff);
-        btnHold = findViewById(R.id.btnHold);
-        btnOn.setOnClickListener(this);
-        btnOff.setOnClickListener(this);
-        btnHold.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        SendCommandToArduino("1");
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        SendCommandToArduino("0");
-                        break;
-                }
-                return false;
-            }
-        });
+        btnForward = findViewById(R.id.btnForward);
+        btnBackward = findViewById(R.id.btnBackward);
+        btnForwardLeft = findViewById(R.id.btnForwardLeft);
+        btnForwardRight = findViewById(R.id.btnForwardRight);
+        btnBackwardLeft = findViewById(R.id.btnBackwardLeft);
+        btnBackwardRight = findViewById(R.id.btnBackwardRight);
+        btnForward.setOnTouchListener(this);
+        btnBackward.setOnTouchListener(this);
+        btnForwardLeft.setOnTouchListener(this);
+        btnForwardRight.setOnTouchListener(this);
+        btnBackwardLeft.setOnTouchListener(this);
+        btnBackwardRight.setOnTouchListener(this);
 
-        InitBluetooth();
     }
 
     void InitBluetooth(){
@@ -147,13 +143,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Button btnConnect = (Button) view;
                 ConnectBluetoothDevice(btnConnect);
                 break;
-            case R.id.btnOn:
-                SendCommandToArduino("1");
-                break;
-            case R.id.btnOff:
-                SendCommandToArduino("0");
+            default:
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+            switch (view.getId()){
+                case R.id.btnForward:
+                    SendCommandToArduino("1");
+                    break;
+                case R.id.btnBackward:
+                    SendCommandToArduino("2");
+                    break;
+                case R.id.btnForwardLeft:
+                    SendCommandToArduino("3");
+                    break;
+                case R.id.btnForwardRight:
+                    SendCommandToArduino("4");
+                    break;
+                case R.id.btnBackwardLeft:
+                    SendCommandToArduino("5");
+                    break;
+                case R.id.btnBackwardRight:
+                    SendCommandToArduino("6");
+                    break;
+            }
+        }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+            SendCommandToArduino("0");
+        }
+
+        return false;
     }
 }
