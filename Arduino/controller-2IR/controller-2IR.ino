@@ -6,23 +6,16 @@ AF_DCMotor motor3(3);
 AF_DCMotor motor4(4);
 
 const int echo = 31, trig = 33;
-int leftSen = A15, leftMidSen = A14, midSen = A13 , rightMidSen = A12 , rightSen = A11;
-int  normalSpeed = 80, backSpeed = 60, slowTurnSpeed = 50, fastTurnSpeed = 130 ; // stable slow 100 fast 130
+int normalSpeed = 80, backSpeed = 60, slowTurnSpeed = 50, fastTurnSpeed = 130 ; // stable slow 100 fast 130
+int leftSen = A8, rightSen = A9;
 String turnLeft = "Left", turnRight = "Right";
 bool turningLeft = 1;
 int switchBtn = 50;
 int forwardLed = 22, stopLed = 24, warningLeftLed = 26, warningRightLed = 28;
 
-void setup() {
+void setup() { 
   pinMode(trig, OUTPUT);
   pinMode(echo, INPUT);
-
-  pinMode(leftSen, INPUT);
-  pinMode(leftMidSen, INPUT);
-  pinMode(midSen, INPUT);
-  pinMode(rightMidSen, INPUT);
-  pinMode(rightSen, INPUT);
-  
   pinMode(forwardLed, OUTPUT);
   pinMode(stopLed, OUTPUT);
   pinMode(warningLeftLed, OUTPUT);
@@ -220,11 +213,8 @@ void RightForward()
 }
 
 void AutoFollowLine(){
-  int leftSenValue = digitalRead(leftSen),
-  leftMidSenValue = digitalRead(leftMidSen), 
-  midSenValue = digitalRead(midSen) , 
-  rightMidSenValue = digitalRead(rightMidSen) , 
-  rightSenValue = digitalRead(rightSen);
+  int leftSenVal = digitalRead(leftSen),
+  rightSenVal = digitalRead(rightSen);
 
   unsigned long duration;
   int distance;
@@ -244,77 +234,24 @@ void AutoFollowLine(){
   }
   else
   {
-      Serial.print(leftSenValue);
-      Serial.print(leftMidSenValue);
-      Serial.print(midSenValue);
-      Serial.print(rightMidSenValue);
-      Serial.print(rightSenValue);
-      Serial.println();
-      
-      // Bat dau nhan dang
-      if((midSenValue == 0) && (leftSenValue == 1) && (leftMidSenValue == 1) && (rightMidSenValue == 1) && (rightSenValue == 1))
-      {
-        Forward();
+      if(leftSenVal && rightSenVal){
+        if(turningLeft){
+          FastTurn(turnLeft);
+        }else{
+          FastTurn(turnRight);
+        }
       }
-      if((leftMidSenValue == 0)&& (midSenValue == 1) && (leftSenValue == 1) && (rightMidSenValue == 1) && (rightSenValue == 1))
-      {
-        SlowTurn(turnLeft);
-      }
-    
-      if((leftMidSenValue == 0)&& (midSenValue == 0) && (leftSenValue == 1) && (rightMidSenValue == 1) && (rightSenValue == 1))
-      {
-        SlowTurn(turnLeft);
-      }
-      
-      if((leftSenValue == 0)&& (leftMidSenValue == 1) && (midSenValue == 1) && (rightMidSenValue == 1) && (rightSenValue == 1) )
-      {
+      if(!leftSenVal && rightSenVal){
+        turningLeft = 1;
         FastTurn(turnLeft);
       }
-    
-      if((leftSenValue == 0)&& (leftMidSenValue == 0) && (midSenValue == 1) && (rightMidSenValue == 1) && (rightSenValue == 1))
-      {
-        FastTurn(turnLeft);
-      }
-      
-       if((rightMidSenValue == 0)&& (midSenValue == 1) && (leftSenValue == 1) && (leftMidSenValue == 1) && (rightSenValue == 1))
-      {
-        SlowTurn(turnRight);
-      }
-    
-        if((rightMidSenValue == 0)&& (midSenValue == 0) && (leftSenValue == 1) && (leftMidSenValue == 1) && (rightSenValue == 1))
-      {
-        SlowTurn(turnRight);
-      }
-      
-       if((rightSenValue == 0)&& (rightMidSenValue == 1) && (midSenValue == 1) && (leftMidSenValue == 1) && (leftSenValue == 1))
-      {
+      if(leftSenVal && !rightSenVal){
+        turningLeft = 0;
         FastTurn(turnRight);
       }
-    
-       if((rightSenValue == 0)&& (rightMidSenValue == 0) && (midSenValue == 1) && (leftMidSenValue == 1) && (leftSenValue == 1))
-      {
-        FastTurn(turnRight);
-      }
-      
-      if((leftSenValue == 0)&& (leftMidSenValue == 0) && (midSenValue == 0) && (rightMidSenValue == 0) && (rightSenValue == 0))
-      {
+      if(leftSenVal && rightSenVal){
         Stop();
       }
-      if((leftSenValue == 1)&& (leftMidSenValue == 1) && (midSenValue == 1) && (rightMidSenValue == 1) && (rightSenValue == 1))
-      {
-        if(turningLeft == 1)
-          SlowTurn(turnLeft);
-        else
-          SlowTurn(turnRight);
-      }
-      if((leftSenValue == 0)&& (leftMidSenValue == 0) && (midSenValue == 0) && (rightMidSenValue == 1) && (rightSenValue == 1))
-      {
-        FastTurn(turnLeft);
-      }
-      if((leftSenValue == 1)&& (leftMidSenValue == 1) && (midSenValue == 0) && (rightMidSenValue == 0) && (rightSenValue == 0))
-      {
-        FastTurn(turnRight);
-      } 
    }
 }
 
