@@ -1,18 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/layoutConnect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/lblDeviceList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device:"
+            android:textSize="15sp"/>
+
+        <Spinner
+            android:id="@+id/spnDeviceList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/lblDeviceList"/>
+
+        <Button
+            android:id="@+id/btnConnectBT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/spnDeviceList"
+            android:text="Connect"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layoutConnect">
+
+        <Button
+            android:id="@+id/btnCenter"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="10dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/btnForward"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_above="@+id/btnCenter"
+            android:background="@drawable/ic_arrow_button"
+            android:rotation="180" />
+
+        <Button
+            android:id="@+id/btnBackward"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/btnCenter"
+            android:background="@drawable/ic_arrow_button" />
+
+        <Button
+            android:id="@+id/btnForwardLeft"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_above="@id/btnBackward"
+            android:layout_toLeftOf="@+id/btnForward"
+            android:layout_marginBottom="55dp"
+            android:background="@drawable/ic_arrow_button"
+            android:rotation="135" />
+
+        <Button
+            android:id="@+id/btnForwardRight"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_above="@id/btnBackward"
+            android:layout_toRightOf="@+id/btnForward"
+            android:layout_marginBottom="55dp"
+            android:background="@drawable/ic_arrow_button"
+            android:rotation="225" />
+
+
+        <Button
+            android:id="@+id/btnBackwardLeft"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/btnForward"
+            android:layout_toLeftOf="@+id/btnBackward"
+            android:layout_marginTop="55dp"
+            android:background="@drawable/ic_arrow_button"
+            android:rotation="45" />
+
+
+        <Button
+            android:id="@+id/btnBackwardRight"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/btnForward"
+            android:layout_toRightOf="@+id/btnBackward"
+            android:layout_marginTop="55dp"
+            android:background="@drawable/ic_arrow_button"
+            android:rotation="315" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
