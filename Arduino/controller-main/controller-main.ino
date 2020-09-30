@@ -11,18 +11,20 @@ int  normalSpeed = 80, backSpeed = 60, slowTurnSpeed = 50, fastTurnSpeed = 130 ;
 String turnLeft = "Left", turnRight = "Right";
 bool turningLeft = 1;
 int switchBtn = 50;
-int forwardLed = 22, stopLed = 24, warningLed = 26;
+int forwardLed = 22, stopLed = 24, warningLeftLed = 26, warningRightLed = 28;
 
 void setup() {
   pinMode(trig, OUTPUT);
   pinMode(echo, INPUT);
   pinMode(forwardLed, OUTPUT);
   pinMode(stopLed, OUTPUT);
-  pinMode(warningLed, OUTPUT);
+  pinMode(warningLeftLed, OUTPUT);
+  pinMode(warningRightLed, OUTPUT);
 
-  digitalWrite(forwardLed, HIGH);
-  digitalWrite(stopLed, HIGH);
-  digitalWrite(warningLed, HIGH);
+  digitalWrite(forwardLed, LOW);
+  digitalWrite(stopLed, LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
   
   Serial.begin(9600);
   Serial3.begin(9600);
@@ -42,6 +44,10 @@ void SlowTurn(String dir)
       motor3.run(FORWARD);
       motor2.run(FORWARD);
       motor4.run(BACKWARD);
+      digitalWrite(warningLeftLed,HIGH);     
+      digitalWrite(forwardLed, LOW);
+      digitalWrite(stopLed, LOW);
+      digitalWrite(warningRightLed, LOW);
   }
   if(dir == turnRight)
   {
@@ -54,6 +60,10 @@ void SlowTurn(String dir)
       motor3.run(BACKWARD);
       motor4.run(BACKWARD);
       motor2.run(FORWARD);
+      digitalWrite(warningRightLed,HIGH);
+      digitalWrite(forwardLed, LOW);
+      digitalWrite(stopLed, LOW);
+      digitalWrite(warningLeftLed, LOW);
   }
 }
 
@@ -70,6 +80,10 @@ void FastTurn (String dir)
       motor3.run(FORWARD);
       motor4.run(FORWARD);
       motor2.run(BACKWARD);
+      digitalWrite(warningLeftLed,HIGH);     
+      digitalWrite(forwardLed, LOW);
+      digitalWrite(stopLed, LOW);
+      digitalWrite(warningRightLed, LOW);
   }
   if(dir == turnRight)
   {
@@ -82,6 +96,10 @@ void FastTurn (String dir)
       motor3.run(BACKWARD);
       motor4.run(BACKWARD);
       motor2.run(FORWARD);
+      digitalWrite(warningRightLed,HIGH); 
+      digitalWrite(forwardLed, LOW);
+      digitalWrite(stopLed, LOW);
+      digitalWrite(warningLeftLed, LOW);
   }
 }
 
@@ -91,6 +109,10 @@ void Stop()
   motor2.run(RELEASE);
   motor3.run(RELEASE);
   motor4.run(RELEASE);
+  digitalWrite(stopLed,HIGH); 
+  digitalWrite(forwardLed, LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 void Forward()
@@ -103,6 +125,10 @@ void Forward()
   motor2.run(FORWARD);
   motor3.run(FORWARD);
   motor4.run(FORWARD);
+  digitalWrite(forwardLed,HIGH);  
+  digitalWrite(stopLed, LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 
@@ -116,6 +142,10 @@ void Backward()
   motor2.run(BACKWARD);
   motor3.run(BACKWARD);
   motor4.run(BACKWARD);
+  digitalWrite(stopLed,HIGH);
+  digitalWrite(forwardLed, LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 void LeftBackward()
@@ -128,6 +158,10 @@ void LeftBackward()
   motor2.run(BACKWARD);
   motor3.run(BACKWARD);
   motor4.run(BACKWARD);
+  digitalWrite(stopLed,HIGH);
+  digitalWrite(forwardLed, LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 void RightBackward()
@@ -140,6 +174,10 @@ void RightBackward()
   motor2.run(BACKWARD);
   motor3.run(BACKWARD);
   motor4.run(BACKWARD);
+  digitalWrite(stopLed,HIGH);
+  digitalWrite(forwardLed, LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 void LeftForward()
@@ -152,6 +190,10 @@ void LeftForward()
   motor2.run(FORWARD);
   motor3.run(FORWARD);
   motor4.run(FORWARD);
+  digitalWrite(forwardLed,HIGH);
+  digitalWrite(stopLed,LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 void RightForward()
@@ -164,6 +206,10 @@ void RightForward()
   motor2.run(FORWARD);
   motor3.run(FORWARD);
   motor4.run(FORWARD);
+  digitalWrite(forwardLed,HIGH);
+  digitalWrite(stopLed,LOW);
+  digitalWrite(warningLeftLed, LOW);
+  digitalWrite(warningRightLed, LOW);
 }
 
 void AutoFollowLine(){
