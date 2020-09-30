@@ -1,5 +1,6 @@
 package com.keycodemon.carcontroller;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -15,6 +16,7 @@ public class ConnectBT extends AsyncTask<Void, Void, Void> {
     static final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private Context context;
+    private MainActivity mainActivity;
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothSocket bluetoothSocket = null;
@@ -23,10 +25,16 @@ public class ConnectBT extends AsyncTask<Void, Void, Void> {
     private boolean bluetoothConnecting = false;
     private boolean connectSuccess = true;
 
-    public ConnectBT(Context context, BluetoothAdapter bluetoothAdapter, String address){
+    WaitingDialog waitingDialog;
+
+    public ConnectBT(Context context, MainActivity mainActivity, BluetoothAdapter bluetoothAdapter, String address){
         this.context = context;
         this.bluetoothAdapter = bluetoothAdapter;
         this.address = address;
+        this.mainActivity = mainActivity;
+
+        waitingDialog = new WaitingDialog(mainActivity);
+        waitingDialog.StartWaitingDialog();
     }
 
     @Override
@@ -60,10 +68,11 @@ public class ConnectBT extends AsyncTask<Void, Void, Void> {
         }else{
             Toast.makeText(context, "Connect successfull!", Toast.LENGTH_LONG).show();
             bluetoothConnecting = true;
+            mainActivity.SetBluetoothSocket(bluetoothSocket);
         }
+
+        waitingDialog.StopWaitingDialog();
     }
-
-
 
     public BluetoothSocket getBluetoothSocket(){
         return bluetoothSocket;

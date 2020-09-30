@@ -37,7 +37,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/layoutConnect">
 
-
         <Button
             android:id="@+id/btnCenter"
             android:layout_width="80dp"

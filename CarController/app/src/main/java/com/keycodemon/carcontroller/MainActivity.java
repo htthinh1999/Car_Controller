@@ -3,35 +3,35 @@ package com.keycodemon.carcontroller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Spinner spnDeviceList;
     Button btnConnectBT, btnForward, btnBackward, btnForwardLeft, btnForwardRight, btnBackwardLeft, btnBackwardRight;
-    ImageButton btn;
+    Switch swControl;
 
-    private ConnectBT connectBT = null;
     private BluetoothAdapter bluetoothAdapter = null;
     private BluetoothSocket bluetoothSocket = null;
     private Set<BluetoothDevice> pairedDevices;
-
     private String bluetoothAddress;
+    private int intervalTime = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         InitBluetooth();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     void InitView(){
 
         spnDeviceList = findViewById(R.id.spnDeviceList);
@@ -58,12 +59,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnForwardRight = findViewById(R.id.btnForwardRight);
         btnBackwardLeft = findViewById(R.id.btnBackwardLeft);
         btnBackwardRight = findViewById(R.id.btnBackwardRight);
-        btnForward.setOnTouchListener(this);
-        btnBackward.setOnTouchListener(this);
-        btnForwardLeft.setOnTouchListener(this);
-        btnForwardRight.setOnTouchListener(this);
-        btnBackwardLeft.setOnTouchListener(this);
-        btnBackwardRight.setOnTouchListener(this);
+
+        btnForward.setOnTouchListener(new RepeatListener(intervalTime, intervalTime, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendCommandToArduino("1");
+            }
+        }));
+        btnBackward.setOnTouchListener(new RepeatListener(intervalTime, intervalTime, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendCommandToArduino("2");
+            }
+        }));
+        btnForwardLeft.setOnTouchListener(new RepeatListener(intervalTime, intervalTime, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendCommandToArduino("3");
+            }
+        }));
+        btnForwardRight.setOnTouchListener(new RepeatListener(intervalTime, intervalTime, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendCommandToArduino("4");
+            }
+        }));
+        btnBackwardLeft.setOnTouchListener(new RepeatListener(intervalTime, intervalTime, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendCommandToArduino("5");
+            }
+        }));
+        btnBackwardRight.setOnTouchListener(new RepeatListener(intervalTime, intervalTime, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendCommandToArduino("6");
+            }
+        }));
 
     }
 
@@ -103,35 +135,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try{
                 bluetoothSocket.getOutputStream().write(command.getBytes());
             }catch (IOException e){
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+
             }
         }else{
             Toast.makeText(getApplicationContext(), "You did not connect to bluetooth device!", Toast.LENGTH_LONG).show();
         }
     }
 
+    public void SetBluetoothSocket(BluetoothSocket bluetoothSocket){
+        this.bluetoothSocket = bluetoothSocket;
+        btnConnectBT.setText("Disconnect");
+    }
+
     void ConnectBluetoothDevice(Button btnConnect){
         if(btnConnect.getText().equals("Connect")){
             String deviceInfo = spnDeviceList.getSelectedItem().toString();
             bluetoothAddress = deviceInfo.substring(deviceInfo.length() - 17);
-            connectBT = (ConnectBT) new ConnectBT(getApplicationContext(), bluetoothAdapter, bluetoothAddress).execute();
-            while (bluetoothSocket==null){
-                bluetoothSocket = connectBT.getBluetoothSocket();
-            }
-            btnConnect.setText("Disconnect");
+            new ConnectBT(getApplicationContext(), MainActivity.this, bluetoothAdapter, bluetoothAddress).execute();
         }else{
             if(bluetoothSocket != null){
                 try {
                     bluetoothSocket.close();
                     bluetoothSocket = null;
                     Toast.makeText(getApplicationContext(), "Disconnect successful!", Toast.LENGTH_LONG).show();
-                    btnConnect.setText("Connect");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }else{
                 Toast.makeText(getApplicationContext(), "Bluetooth Socket is null", Toast.LENGTH_LONG).show();
             }
+            btnConnect.setText("Connect");
         }
     }
 
@@ -149,34 +182,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-
-        if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-            switch (view.getId()){
-                case R.id.btnForward:
-                    SendCommandToArduino("1");
-                    break;
-                case R.id.btnBackward:
-                    SendCommandToArduino("2");
-                    break;
-                case R.id.btnForwardLeft:
-                    SendCommandToArduino("3");
-                    break;
-                case R.id.btnForwardRight:
-                    SendCommandToArduino("4");
-                    break;
-                case R.id.btnBackwardLeft:
-                    SendCommandToArduino("5");
-                    break;
-                case R.id.btnBackwardRight:
-                    SendCommandToArduino("6");
-                    break;
-            }
-        }else if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-            SendCommandToArduino("0");
-        }
-
-        return false;
-    }
 }
