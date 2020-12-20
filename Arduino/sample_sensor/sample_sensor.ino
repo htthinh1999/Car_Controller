@@ -1,4 +1,4 @@
-int ir = 2;  // hong ngoai
+int ir = 4;  // hong ngoai
 
 void setup() {
   pinMode(ir, INPUT);
